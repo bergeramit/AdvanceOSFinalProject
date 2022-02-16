@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  dev:
+    image: my_bcc_docker
+    privileged: true
+    ports:
+      - "8080:80"
+      - "2200:22"
+    volumes:
+      - /lib/modules:/lib/modules:ro 
+      - /usr/src:/usr/src:ro 
+      - /etc/localtime:/etc/localtime:ro 
+
+  test:
+    image: ubuntu:18.04
+    privileged: true
