@@ -17,12 +17,15 @@ RUN set -ex; \
 	zlib1g-dev \
 	libelf-dev \
 	libfl-dev \
-	python3-distutils;
+	python3-distutils \
+	python3-pip;
 
 
 EXPOSE 22 80
 COPY entrypoint.sh /
+COPY protobuf/bin/protoc /usr/bin/
 RUN chmod +x /entrypoint.sh
+RUN pip3 install protobuf
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/bash"]

@@ -76,7 +76,7 @@ After eternity, build with:
 ```
 sudo docker image build -t my_bcc_docker .
 ```
-dockerfile:
+the first dockerfile:
 ```docker
 FROM ubuntu:18.04
 LABEL maintainer="Amit Berger"
@@ -109,7 +109,7 @@ CMD ["/bin/bash"]
 
 Run docker with:
 ```
-sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro --workdir /usr/share/bcc/examples my_bcc_docker
+sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro -v /home/amit/final_project/proto2ebpf:/usr/share/proto2ebpf --network="host" --workdir /usr/share/bcc/examples my_bcc_docker
 ```
 
 where the entry is: 
