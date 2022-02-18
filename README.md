@@ -141,5 +141,32 @@ Run with:
 docker-compose up
 ```
 
-needs to understand how to enter the services
+## Testing my repo
 
+I started to write the proto2ebpf repo and I placed it here:
+```
+https://github.com/bergeramit/proto2ebpf.git
+```
+
+To run this simply clone the proto2ebpf to this folder and run the docker build and docker run command (I have included a sample of this repo here)
+
+Now we will run this with the docker run with host network (since we want to test the ebpf works in our localhost):
+
+```
+sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro -v /home/amit/AdvanceOSFinalProject/proto2ebpf:/usr/share/proto2ebpf --network="host" -p 80:80 --workdir /usr/share/proto2ebpf my_bcc_docker
+```
+Then run inside the bash:
+```
+python3.6 proto2ebpf.py
+```
+to initiate the filter for http headers.
+And on our other ternimal we will also initiate a http server to query:
+```
+sudo docker container exec -it <CONTAINER_ID> /bin/bash
+python3 -m http.server
+```
+
+Now we can run (from host) the curl to see if we catch any http headers in our main terminal:
+```
+curl http://0.0.0.0:8000/
+```
