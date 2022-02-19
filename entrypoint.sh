@@ -11,4 +11,5 @@ make
 make install
 popd
 mount -t debugfs none /sys/kernel/debug/
+cd /usr/share/proto2ebpf
 exec "$@"
