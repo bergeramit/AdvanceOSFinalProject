@@ -2,3 +2,4 @@
 !entrypoint.sh
 !build
 !bcc
+!protobuf/bin/protoc
