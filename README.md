@@ -76,62 +76,18 @@ After eternity, build with:
 ```
 sudo docker image build -t my_bcc_docker .
 ```
-the first dockerfile:
-```docker
-FROM ubuntu:18.04
-LABEL maintainer="Amit Berger"
-
-RUN set -ex; \
-        apt-get update -y; \
-        DEBIAN_FRONTEND=noninteractive apt install -y \
-        bison \
-        build-essential \
-        cmake \
-        flex \
-        git \
-        libedit-dev \
-        libllvm6.0 \
-        llvm-6.0-dev \
-        libclang-6.0-dev \
-        python \
-        zlib1g-dev \
-        libelf-dev \
-        libfl-dev \
-        python3-distutils;
-
-
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/bin/bash"]
-```
-
+Dockerfile contains the latest build config
 Run docker with:
 ```
 sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro -v /home/amit/final_project/proto2ebpf:/usr/share/proto2ebpf --network="host" --workdir /usr/share/bcc/examples my_bcc_docker
 ```
 
-where the entry is: 
-entrypoint.sh
-```
-#!/bin/bash
-set -e
-git clone https://github.com/iovisor/bcc.git
-mkdir bcc/build; cd bcc/build
-cmake ..
-make
-make install
-cmake -DPYTHON_CMD=python3 .. # build python3 binding
-pushd src/python/
-make
-make install
-popd
-mount -t debugfs none /sys/kernel/debug/
-exec "$@"
-```
+where the entry is: entrypoint.sh
 
 ## Docker compose
+
+*probably uneeded compose because we use host as network to make our tests on loopback*
+
 Install with:
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -141,7 +97,7 @@ Run with:
 docker-compose up
 ```
 
-## Testing my repo
+# Testing my repo
 
 I started to write the proto2ebpf repo and I placed it here:
 ```
@@ -153,11 +109,15 @@ To run this simply clone the proto2ebpf to this folder and run the docker build 
 Now we will run this with the docker run with host network (since we want to test the ebpf works in our localhost):
 
 ```
-sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro -v /home/amit/AdvanceOSFinalProject/proto2ebpf:/usr/share/proto2ebpf --network="host" -p 80:80 --workdir /usr/share/proto2ebpf my_bcc_docker
+# Build with:
+sudo docker image build -t my_bcc_docker .
+
+# Run with
+sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro -v /home/amit/AdvanceOSFinalProject/proto2ebpf:/usr/share/proto2ebpf --network="host" --workdir /usr/share/proto2ebpf my_bcc_docker
 ```
 Then run inside the bash:
 ```
-python3.6 proto2ebpf.py
+python3.6 proto2ebpf.py --env=server
 ```
 to initiate the filter for http headers.
 And on our other ternimal we will also initiate a http server to query:
