@@ -115,18 +115,22 @@ sudo docker image build -t my_bcc_docker .
 # Run with
 sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro -v /home/amit/AdvanceOSFinalProject/proto2ebpf:/usr/share/proto2ebpf --network="host" --workdir /usr/share/proto2ebpf my_bcc_docker
 ```
-Then run inside the bash:
+Then run inside the bash in the container:
 ```
-python3.6 proto2ebpf.py --env=server
+python3.6 proto2ebpf.py --env=set_filter
 ```
 to initiate the filter for http headers.
-And on our other ternimal we will also initiate a http server to query:
+
+Now we can run our dummy server which does not even know about the ebpf filter:
+run inside the bash in the container:
 ```
 sudo docker container exec -it <CONTAINER_ID> /bin/bash
-python3 -m http.server
+python3.6 proto2ebpf.py --env=server
 ```
+to initiate the demo server.
 
 Now we can run (from host) the curl to see if we catch any http headers in our main terminal:
 ```
 curl http://0.0.0.0:8000/
 ```
+
