@@ -152,14 +152,18 @@ The server_without_filter calls additional function to validate the packet (_pro
 
 ## Was the eBPF filter faster?
 
-Unfourtunatly, results were inconclusive regarding the benefit of using eBPF.
-This can come from the fact that the current eBPF rule is very simple and does not save alot of cycles in the process.
+Measured the diff in time from the: "Started Session" log to the last "Hanlded!"
 
 On 2000 packets send on loopback (half should be filtered out):
 
-With eBPF filter: approx time is 43 seconds
+With eBPF filter: approx time is 44.5 seconds
 
-Without eBPF filter: approx time is 45 seconds
+Without eBPF filter: approx time is 45.3 seconds
+
+### Possible Explanations
+
+Unfourtunatly, results were inconclusive regarding the benefit of using eBPF.
+This can come from the fact that the current eBPF rule is very simple and does not save alot of cycles in the process. In addition, the need to log/ time from within the system (was done for simplictic reasons) might effect the processing time, since printing is a very intensive functionality.
 
 # Retrospective
 
