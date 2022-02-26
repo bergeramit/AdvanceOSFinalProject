@@ -155,8 +155,10 @@ The server_without_filter calls additional function to validate the packet (_pro
 Unfourtunatly, results were inconclusive regarding the benefit of using eBPF.
 This can come from the fact that the current eBPF rule is very simple and does not save alot of cycles in the process.
 
-On 2000 packets send (half should be filtered out):
+On 2000 packets send on loopback (half should be filtered out):
+
 With eBPF filter: approx time is 43 seconds
+
 Without eBPF filter: approx time is 45 seconds
 
 # Retrospective
