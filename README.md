@@ -137,11 +137,19 @@ curl http://0.0.0.0:8000/
 
 # Final Build
 
+Server with protobuf filter
 ```
 sudo docker container exec -it <CONTAINER_ID> /bin/bash
 python3.6 proto2ebpf.py --env=server_with_filter
 ```
 
+Server without protobuf filter:
+```
+sudo docker container exec -it <CONTAINER_ID> /bin/bash
+python3.6 proto2ebpf.py --env=server_without_filter
+```
+
+TO run a client against those servers
 ```
 sudo docker container exec -it <CONTAINER_ID> /bin/bash
 python3.6 proto2ebpf.py --env=client
