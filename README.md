@@ -1,4 +1,5 @@
 # AdvanceOSFinalProject
+
 # Final Project Progress Journal
 
 In order to get the bcc docker running (from: https://github.com/zlim/bcc-docker) I needed to:
@@ -63,11 +64,19 @@ make
 sudo make install
 popd
 ```
-Success!
+Success! (shows up in the Dockerfile)
 
 We now have on our machine the compiled bcc with working examples like:
 ```
 amit@amit-VirtualBox:~/bcc/examples/networking/http_filter$ sudo python3 http-parse-simple.py -i lo
+```
+And on another terminal we can:
+```
+python3 -m http.server
+```
+And another terminal to run:
+```
+curl 0.0.0.0:8000
 ```
 
 # Building Docker with our bcc build
@@ -81,7 +90,6 @@ Run docker with:
 ```
 sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro -v /home/amit/final_project/proto2ebpf:/usr/share/proto2ebpf --network="host" --workdir /usr/share/bcc/examples my_bcc_docker
 ```
-
 where the entry is: entrypoint.sh
 
 ## Docker compose
@@ -115,25 +123,6 @@ sudo docker image build -t my_bcc_docker .
 # Run with
 sudo docker run -it --rm --privileged -v /lib/modules:/lib/modules:ro -v /usr/src:/usr/src:ro -v /etc/localtime:/etc/localtime:ro -v /home/amit/AdvanceOSFinalProject/proto2ebpf:/usr/share/proto2ebpf --network="host" --workdir /usr/share/proto2ebpf my_bcc_docker
 ```
-Then run inside the bash in the container:
-```
-python3.6 proto2ebpf.py --env=set_filter
-```
-to initiate the filter for http headers.
-
-Now we can run our dummy server which does not even know about the ebpf filter:
-run inside the bash in the container:
-```
-sudo docker container exec -it <CONTAINER_ID> /bin/bash
-python3.6 proto2ebpf.py --env=server
-```
-to initiate the demo server.
-
-Now we can run (from host) the curl to see if we catch any http headers in our main terminal:
-```
-curl http://0.0.0.0:8000/
-```
-
 
 # Final Build
 
@@ -154,3 +143,34 @@ TO run a client against those servers
 sudo docker container exec -it <CONTAINER_ID> /bin/bash
 python3.6 proto2ebpf.py --env=client
 ```
+
+# Results:
+
+## The difference between server_without_filter and server_with_filter
+
+The server_without_filter calls additional function to validate the packet (_process_with_container_filter) While the server_with_filter does not because this filter was already applied in the eBPF filter.
+
+## Was the eBPF filter faster?
+
+Unfourtunatly, results were inconclusive regarding the benefit of using eBPF.
+This can come from the fact that the current eBPF rule is very simple and does not save alot of cycles in the process.
+
+On 2000 packets send (half should be filtered out):
+With eBPF filter: approx time is 43 seconds
+Without eBPF filter: approx time is 45 seconds
+
+# Retrospective
+
+In retrospective I think I would have gone to probably imlementing the protobuf rules to instructions intead of the BCC framework C code because I thinks that would have given me the ability to implement advance rules without unreadable error messages when trying to load the eBPF.
+Although I must say that probably the BCC is right for the timefram of this project because implementing a compiler in a few weeks with the load, backend and everything BCC takes care for would have been a real challenge.
+This project for one person in the time frame, to me, was alot more complicated than expected.
+
+
+# Summary
+
+I have learned alot about the use of eBPFs as socket filters, the BCC framework, debugging compiled eBPFs, protobuf, protobuf's encodings and that timing differences is super hard to measure!
+This has been an amazing opportunity for me to develop a full sized project's POC (lol) including containers to run client/ server, simple compiler from basic protobuf rules to eBPFs and loading that and trying to time it.
+
+I hope this repo and the proto2ebpf repo will help developers who are just getting started with eBPFs and BCC framework as I provided a simple guide to get started on you clena Ubuntu 18.04.
+
+Amit.
