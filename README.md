@@ -134,3 +134,15 @@ Now we can run (from host) the curl to see if we catch any http headers in our m
 curl http://0.0.0.0:8000/
 ```
 
+
+# Final Build
+
+```
+sudo docker container exec -it <CONTAINER_ID> /bin/bash
+python3.6 proto2ebpf.py --env=server_with_filter
+```
+
+```
+sudo docker container exec -it <CONTAINER_ID> /bin/bash
+python3.6 proto2ebpf.py --env=client
+```
