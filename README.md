@@ -2,7 +2,7 @@
 
 This project is aimed to determine and prove that eBPF code that will enforce rules regarding protobufs will be faster than writing those restrictive rulse in the containers. This will help future applications to scale with the use of the protobuf-to-ebpf library.
 
-## Project has 3 parts
+## Project's Table of Content
 
 1. The litrature in the subject (on "What was already available ?")
 2. This repo which contains:
