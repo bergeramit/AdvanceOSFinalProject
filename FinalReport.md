@@ -4,7 +4,7 @@
 
 1. Introduction
     1. Introduction
-    2. Problem
+    2. General Problem
     3. Goal
     4. Challenges
 2. Getting Started
@@ -24,16 +24,16 @@
 
 ## 1.1. Introduction
 
-This project aims to provide developers with tools to implement  application-level policies based of protobuf with better performance and security
+This project aims to prove that an alternative solution, proposed by this paper, that changes the way applications enforce policies, can improve the application's performace and security and also to provide developers with the first steps of implementing faster and more secured policy rule enforcements.
 
-## 1.2. Problem
+## 1.2. General Problem
 
 Current app policies, such as login, must first retrieve the user input's information, parse it, understand it, and then decide whether this message complied with the policy or not. This process has several built-in flaws.
 
 ### 1.2.1. Time Consuming
 
 Parsing and processing every input message to check for compliacy is very time-consuming.
-For example, every login attempt costs the server time to process the message, test for valid inputs, search database to find user's profile and match the passwords and username, most of the times, more tests are needed to verify location, device used, etc. The process of retrieving the inputs and parsing them has became a more and more time consuming task in light of the rise of Dockers and Containers - which is now considered state-of-the-art platforms for application's environment.
+For example, every login attempt costs the server time to process the message, test for valid inputs, search database to find user's profile and match the passwords and username, most of the times, more tests are needed to verify location, device used, etc. The process of retrieving the inputs and parsing them has became a more and more time consuming task in light of the rise of Dockers and Containers - which is now considered state-of-the-art platforms for application's environment. This overhead is due to the fact that multiple docker's can run on the same physical server and have the same IP address, which means, additional information needs to be processed in order to get to the app's policy section (such as distributing every input to the currect container).
 While the policy enforcing process must be done in order to validate a user, the process of discarding invalid credentials, for example - an input password of length 2 when the minimun password length is 4, can be sped up.
 
 ### 1.2.2. Security Flaws
@@ -42,9 +42,9 @@ A highly used attack surface for hackers these days involve trying to trick appl
 
 ## 1.3. Goal
 
-This project's goal is to find a faster and more secure way to implement application-level policies by moving policy rules from the application's evironment to the kernel's environment where they can be validated much faster and more secured. 
+This project's goal is to find a faster and more secure way to implement application-level policies by moving policy rules from the application's evironment to the kernel's environment where they can be validated much faster and more secured (malicious attempts will not reach the application). 
 
-More specific, this project is aimed to determine and prove that eBPF code that will enforce rules regarding protobufs will be faster than writing those restrictive rulse in the containers. This will help future applications to scale with the use of the protobuf-to-ebpf library.
+More specificly, this project is aimed to determine and prove that eBPF code that will enforce rules regarding protobufs will be faster than writing those restrictive rulse in the containers. This will help future applications to scale with the use of the protobuf-to-ebpf library.
 
 ### 1.3.1. The Scope
 
@@ -120,7 +120,7 @@ Relevant Work on the subject of eBPF:
 1. Support better semantic rules and usage (relevant for our project because we aspire to create easier way to create semantic rules ontop of protobuf):
    1. Basic kernel and user space support with bpf.h and libbpf
       1. essentially making it slightly easier to write as it had c macros wrapping the instruction set
-      2. still its like writing assembly with macros - pretty ugly :stuck_out_tongue:
+      2. still its like writing assembly with macros
    2. The LLVM support for higher abstraction layer over eBPF
       1. LLVM lets us write a C like program that will actually be compiled into an ELF
       2. This gives us the ability to separate the entities in the process of creating a eBPF program like:
@@ -131,7 +131,6 @@ Relevant Work on the subject of eBPF:
       2. The backend and data structures still defines C code which can be hard to understand or extend (complete C files inside .py)
          1. although the loader frontend are much more concise and simple to use, write and understand
       3. Because we are now using python we are on the safer side of the frontend and loader (no more null dereferences, etc.)
-      4. so still pretty ugly :stuck_out_tongue:
    4. BPFftrace
       1. very limited but easy to write and run one-liner AWK like bpf programs
    5. Final level - IOVisor - eBPF technology in the Cloud (and other buzz words)
@@ -165,12 +164,12 @@ Relevant Work on the subject of eBPF:
 
 ### 2.2.1. Repos
 
-Main repo:
+Projects repo (includes this report and the research journal):
 ```
 https://github.com/bergeramit/AdvanceOSFinalProject.git
 ```
 
-Repo that contains the implementation of translating simple protobuf rules into eBPFs
+Main repo: contains the implementation of translating simple protobuf rules into eBPFs with the example and testing ground of the server-client search query code.
 ```
 https://github.com/bergeramit/proto2ebpf.git
 ```
@@ -208,16 +207,32 @@ python3.6 proto2ebpf.py --env=client
 
 ### 3.2.1. What this setup actually have?
 
-First this setup runs two servers, both of which has a simple search requests policy. However, one of the servers enforces this policy using eBPFs while the other uses simple python program to do so.
-Both servers run as docker containers and are set to be in the same network as the client.
-Our client is a simple testing script that will send alot of queries to the two servers and log the time it took for each to respond.
+First this setup runs two servers, both of which has a simple search requests policy. However, one of the servers enforces this policy using eBPFs while the other uses simple python program to do so. (see server_app.py
+)
+Both servers run as docker containers and are set to be in the same network as the client. (see the docker files and command line arguments)
+
+Our client is a simple testing script that will send alot of queries to the two servers and log the time it took for each to respond. (see client_app.py)
 
 ### 3.2.2. What are the policy?
 
 We tested a simple black character policy - which means, if the client send the character 'A' that the query should be discarded.
 
-## 3.3. Results
+### 3.2.3. Testing Parameters
 
+Host (server and client): Ubuntu 18.04, 64bit
+
+Queries sent: 2000
+
+Queries that should be filtered out: 1000 (half)
+
+Network topology: loopback
+
+Server and Client environment: both were programed using 
+python3
+
+eBPF compiled: BCC compiler
+
+## 3.3. Results
 
 ### 3.3.1. The difference between server_without_filter and server_with_filter
 
