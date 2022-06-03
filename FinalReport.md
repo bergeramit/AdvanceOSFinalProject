@@ -17,8 +17,7 @@
 4. Summary
     1. Retrospective
     2. Future Work
-    3. Summary
-    4. Resources
+5. Resources
 
 # 1. Introuction
 
@@ -89,8 +88,8 @@ Extended Berkeley Packet Filter (eBPF) [3] is a kernel technology that allows pr
 8. no loops
 9. must have at most 4096 instructions in each eBPF VM
 10. Compiler
-   1. compiles into bytecode so can be ran on a 32bit systems as well (cross platform)
-   2. JIT in kernel
+    1. compiles into bytecode so can be ran on a 32bit systems as well (cross platform)
+    2. JIT in kernel
 
 
 ## 2.1.2. Protobuf
@@ -234,7 +233,7 @@ eBPF compiled: BCC compiler
 
 ## 3.3. Results
 
-### 3.3.1. The difference between server_without_filter and server_with_filter
+### 3.3.1. The difference between server with eBPF rule policy and server with 'normal' python rule policy
 
 The server_without_filter calls additional function to validate the packet (_process_with_container_filter) While the server_with_filter does not because this filter was already applied in the eBPF filter.
 
@@ -255,6 +254,13 @@ This can come from the fact that the current eBPF rule is very simple and does n
 
 # 4. Summary
 
+I have learned a-lot about the use of eBPFs as socket filters, the BCC framework, debugging compiled eBPFs, protobuf, protobuf’s encodings and that timing differences is super hard to measure!
+This has been an amazing opportunity for me to develop a full-sized project’s POC (lol) including containers to run client/ server, simple compiler from basic protobuf rules to eBPFs and loading that and trying to time it.
+
+I hope this repo and the proto2ebpf repo will help developers who are just getting started with eBPFs and BCC framework as I provided a simple guide to get started on you clean Ubuntu 18.04.
+
+I am still a strong believer that this method is faster than the container’s enforcement and the only reason why I could not prove this currently is due to the fact that this project had to be submitted by a certain deadline, see future work for more on that.
+
 ## 4.1. Retrospective
 
 In retrospective I think I would have gone to probably implementing the protobuf rules to instructions instead of the BCC framework C code because I thinks that would have given me the ability to implement advance rules without unreadable error messages when trying to load the eBPF.
@@ -267,17 +273,7 @@ I am a strong believer in this approach, performance-wise and security-wise (vul
 I will continue my research and provide a more accurate and complex result with the hope of proving that using eBPF will speed the validation of protocols implemented over protobuf.
 
 
-## 4.3. Summary
-
-I have learned a-lot about the use of eBPFs as socket filters, the BCC framework, debugging compiled eBPFs, protobuf, protobuf’s encodings and that timing differences is super hard to measure!
-This has been an amazing opportunity for me to develop a full-sized project’s POC (lol) including containers to run client/ server, simple compiler from basic protobuf rules to eBPFs and loading that and trying to time it.
-
-I hope this repo and the proto2ebpf repo will help developers who are just getting started with eBPFs and BCC framework as I provided a simple guide to get started on you clean Ubuntu 18.04.
-
-I am still a strong believer that this method is faster than the container’s enforcement and the only reason why I could not prove this currently is due to the fact that this project had to be submitted by a certain deadline, see future work for more on that.
-
-
-# 4. Resources
+# 5. Resources
 
 1. Main Repo: proto2ebpf - https://github.com/bergeramit/proto2ebpf.git
 2. Report and research journal of this project: https://github.com/bergeramit/AdvanceOSFinalProject.git
