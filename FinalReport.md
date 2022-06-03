@@ -52,6 +52,12 @@ This project focuses only on applications that are deployed on containers and us
 In order to be able to test and validate the project we narrowed the scope to applications running on containers that uses protobuf objects as a way to transferring information between clients and servers. The project aims to tranform these protobuf based policy rules into eBPFs that will be loaded into the kernel of the server and thus creating the faster and more secured enforcement.
 Both eBPFs and protobufs will be  explained in section 2.1.
 
+### 1.3.2. Why we chose these setup
+
+The main advantages eBPF gives us is a fast and easy way to dynamically load and run small programs into the kernel's memory - this will help us improve the time it takes to enforce the policies. Another adventage to using eBPF is that the syntax is rather simple and easy to use - which gives it an edge when it comes to writing 'policy compilers' - translating full context rules into simple eBPF rule enforcing programs.
+The other significant choice here is the protocol buffers. We chose protobufs based on the idea that these are a popular, easy to manage and simple serialization option for sending and recieving complex data over the network. In order to creat an eBPF program based on protobuf rules we must know how the encoding schemes work which luckily is very intuitive in protbufs.
+Finally, both protobufs and eBPFs has a large supportive communities and are very dynamic in nature, meaning eBPFs are unix based - which suits alot of the current application's environment market, and protbuf's core concept is that it supports a wide veriaty of program languages. These perks makes the use of eBPF with protobufs very appealing. more on protobuf's and eBPF's core ideas and capabilities can be found in section 2.1.
+
 ## 1.4. Challenges
 
 There are two challenges to this project: translating application level rules into eBPFs and testing and proving validity of this solution.
