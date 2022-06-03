@@ -226,9 +226,11 @@ We tested a simple black character policy - which means, if the client send the 
 
 Host (server and client): Ubuntu 18.04, 64bit
 
-Queries sent: 2000
+Number of Runs: 100
 
-Queries that should be filtered out: 1000 (half)
+Queries sent (per run): 2000
+
+Queries that should be filtered out (per run): 1000 (half)
 
 Network topology: loopback
 
