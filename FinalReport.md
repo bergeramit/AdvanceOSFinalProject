@@ -64,7 +64,8 @@ There are two challenges to this project: translating application level rules in
 
 ### 1.4.1. translating application level rules into eBPFs
 
-The challenge here stems from the fact that in the application’s world (space) we have all the knowledge we need, we have the state, the databases access to more containers and applicatoins, and more, while in the eBPF world we are only relying on a very small amount of memory and almost no knowledge of the applications state. In other words, we need to translate semantic and full context meaning of policy rules into the contextless world of eBPFs.
+The challenge here stems from the fact that in the application’s world (space) we have all the knowledge we need, we have the state, the databases access to more containers and applicatoins, and more, while in the eBPF world we are only relying on a very small amount of memory and almost no knowledge of the applications state. In other words, we need to translate semantic and full context meaning of policy rules into the contextless world of eBPFs. Another great challenge is that protobuf objects can be nested, very large and complex beings. This, plus the complexity of the policy rules poses a great challenge in translating them into eBPFs which are known to have very little memory, running time cycles and very small program's sizes. There are clean limits to this approach, we can validate up to a certain point and this needs to be addresses in future work.
+Because of the limits in the current eBPF design, we will not be able to create any policy rule enforcing program we would like, however, for the scope of this work and to prove the usability in simple rules, the protobuf/ eBPF scope will suffice.
 
 ### 1.4.2. testing and proving validity of this solution
 
